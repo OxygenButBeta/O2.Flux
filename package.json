@@ -1,5 +1,5 @@
 {
-  "name": "com.OxygenButBeta.Flux",
+  "name": "com.oxygenbutbeta.flux",
   "version": "1.0.0",
   "displayName": "O2 Flux",
   "description": "A chill, semi-automatic Service Locator & Task Runner for Unity.",
