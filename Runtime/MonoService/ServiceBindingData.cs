@@ -44,9 +44,16 @@ public class ServiceBindingData {
     }
 
     public void Unbind() {
-        if (!UnbindOnDestroy || constructedType == null) return;
-        FluxReflectionUtility.GetUnbindingMethod((OverrideType ? OverrideTypeValue : ServiceComponent.GetType()) ??
-                                                 ServiceComponent.GetType()).Invoke(null, null);
+        if (!UnbindOnDestroy || ServiceComponent == null) return;
+
+        Type serviceType = (OverrideType && OverrideTypeValue != null) 
+            ? OverrideTypeValue 
+            : ServiceComponent.GetType();
+
+        MethodInfo unbindMethod = FluxReflectionUtility.GetUnbindingMethod(serviceType);
+        if (unbindMethod != null) {
+            unbindMethod.Invoke(null, null);
+        }
     }
 
     IEnumerable<Type> GetFilteredTypes() {

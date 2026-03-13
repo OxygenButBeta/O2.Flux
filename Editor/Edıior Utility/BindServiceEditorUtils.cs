@@ -1,17 +1,33 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 public static class BindServiceEditorUtils {
     [MenuItem("CONTEXT/Component/Bind as Service")]
     static void BindAsService(MenuCommand command) {
         Component targetComponent = (Component)command.context;
         GameObject targetGameObject = targetComponent.gameObject;
-        MonoServiceBinder binder = targetGameObject.AddComponent<MonoServiceBinder>();
-        SerializedObject so = new(binder);
-        SerializedProperty serviceProp = so.FindProperty("ServiceComponent");
-        serviceProp.objectReferenceValue = targetComponent;
-        so.ApplyModifiedProperties();
-        Debug.Log($"[ServiceBinder] {targetComponent.GetType().Name} Bind Success!", targetGameObject);
+
+        MonoServiceBinder binder = targetGameObject.GetComponent<MonoServiceBinder>();
+        if (!binder) {
+            binder = targetGameObject.AddComponent<MonoServiceBinder>();
+            Undo.RegisterCreatedObjectUndo(binder, "Create MonoServiceBinder");
+        }
+
+        if (binder.Bindings.Any(b => b.ServiceComponent == targetComponent)) {
+            Debug.LogWarning($"[ServiceBinder] {targetComponent.GetType().Name} is already in list!", targetGameObject);
+            return;
+        }
+
+        Undo.RecordObject(binder, "Bind Component as Service");
+
+        ServiceBindingData newData = new() {
+            ServiceComponent = targetComponent as MonoBehaviour,
+            UnbindOnDestroy = true
+        };
+        
+        binder.Bindings.Add(newData);
+
         EditorUtility.SetDirty(binder);
     }
 }
