@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "displayName": "O2 Flux",
   "description": "A chill, semi-automatic Service Locator & Task Runner for Unity.",
-  "unity": "6.3.9F1",
+  "unity": "6000.0",
   "author": {
     "name": "Süleyman Akbulut",
     "email": "suleymanakblt77@gmail.com",
