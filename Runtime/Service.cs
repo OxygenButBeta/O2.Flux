@@ -1,69 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
 using O2.Flux.Internal;
 using UnityEngine;
+
 #pragma warning disable CS0162 // Unreachable code detected
 
 namespace O2.Flux {
-    public static class Service<TService> where TService : class {
-        public const string BindMethodName = nameof(Bind);
-        public const string UnbindMethodName = nameof(Unbind);
-        static TService Instance;
-        const bool LogWarning = false;
-        const bool LogInfo = false;
+    public static class GlobalService {
+        static readonly SingletonDependencyContainer singletonDependencyContainer = new();
 
-        public static void Bind(TService service) {
-#if UNITY_EDITOR
-            if (LogWarning && service == null)
-                Debug.Log($"Trying to bind null service of type {typeof(TService).Name}");
-#endif
-            FluxUtility.HandleSpecialServiceInitialization(service);
-            Instance = service;
+        public static void RegisterInstance<T>(T instance) where T : class {
+            singletonDependencyContainer.RegisterServiceAs<T>(instance);
+            FluxUtility.HandleSpecialServiceInitialization(instance);
         }
 
-        public static void Unbind() {
-            FluxUtility.HandleSpecialServiceDestruction(Instance);
-            Instance = null;
+        public static void RegisterInstance(Type type, object instance) {
+            singletonDependencyContainer.RegisterService(type, instance);
+            FluxUtility.HandleSpecialServiceInitialization(instance);
         }
 
-        public static TService Get() {
-#if UNITY_EDITOR
-            if (LogWarning && Instance == null)
-                Debug.Log($"Trying to get null service of type {typeof(TService).Name}");
-#pragma warning disable CS0162 // Unreachable code detected
-            if (LogInfo) Debug.Log($"Getting service of type {typeof(TService).Name}");
-#pragma warning restore CS0162 // Unreachable code detected
-#endif
-            return Instance;
+        public static void UnregisterInstance(Type type, object instance) {
+            singletonDependencyContainer.RemoveService(type);
+            FluxUtility.HandleSpecialServiceDestruction(instance);
         }
 
-        public static ServiceReference<TService> GetServiceReference() {
-            return new ServiceReference<TService>();
+        public static void UnregisterInstance<T>(T instance) {
+            singletonDependencyContainer.RemoveService(typeof(T));
+            FluxUtility.HandleSpecialServiceDestruction(instance);
         }
-#if FLUX_UNITASK_SUPPORT
-        public static void WaitForService(System.Action<TService> onAvailable, bool notifyWhenProvided = false) {
-            if (Instance != null) {
-                ProviderListener(Instance);
+
+        public static void WaitForService<TService>(System.Action<TService> onAvailable,
+            bool notifyWhenProvided = false) where TService : class {
+            TService service = singletonDependencyContainer.ResolveService<TService>();
+            if (singletonDependencyContainer.ResolveService<TService>() != null) {
+                ProviderListener(service);
                 return;
             }
 
-            FluxAsyncHelpers.WaitUntilAndExecute(() => Get() != null, () => ProviderListener(Get()));
+            FluxAsyncHelpers.WaitUntilAndExecute(() => singletonDependencyContainer.ResolveService<TService>() != null,
+                () => ProviderListener(singletonDependencyContainer.ResolveService<TService>()));
 
-            void ProviderListener(TService service) {
+            void ProviderListener(TService subService) {
                 if (notifyWhenProvided)
                     Debug.Log("Service of type " + typeof(TService).Name + " is now available. Notifying listener.");
-                onAvailable(service);
+                onAvailable(subService);
             }
         }
-
-        public static void WaitForServiceReference(Action<ServiceReference<TService>> onAvailable,
-            bool notifyWhenProvided = true) {
-            WaitForService(service => {
-                if (notifyWhenProvided)
-                    Debug.Log("Service of type " + typeof(TService).Name +
-                              " is now available. Notifying listener with reference.");
-                onAvailable(GetServiceReference());
-            }, notifyWhenProvided);
-        }
-#endif
     }
+  
 }

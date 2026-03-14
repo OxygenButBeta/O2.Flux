@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using O2.Flux;
 using O2.Flux.Internal;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -33,27 +34,24 @@ public class ServiceBindingData {
     Type constructedType;
     void ResetOverride() => OverrideTypeValue = null;
 
-    public void Bind() {
+    public void Bind(BinderBase binder) {
         if (!ServiceComponent)
             return;
 
         Type serviceType = (OverrideType ? OverrideTypeValue : ServiceComponent.GetType()) ??
                            ServiceComponent.GetType();
 
-        FluxReflectionUtility.GetBindingMethod(serviceType).Invoke(null, new object[] { ServiceComponent });
+        binder.BindToContainer(serviceType, ServiceComponent);
     }
 
-    public void Unbind() {
+    public void Unbind(BinderBase binder) {
         if (!UnbindOnDestroy || ServiceComponent == null) return;
 
-        Type serviceType = (OverrideType && OverrideTypeValue != null) 
-            ? OverrideTypeValue 
+        Type serviceType = (OverrideType && OverrideTypeValue != null)
+            ? OverrideTypeValue
             : ServiceComponent.GetType();
 
-        MethodInfo unbindMethod = FluxReflectionUtility.GetUnbindingMethod(serviceType);
-        if (unbindMethod != null) {
-            unbindMethod.Invoke(null, null);
-        }
+        binder.UnbindInstance(serviceType, ServiceComponent);
     }
 
     IEnumerable<Type> GetFilteredTypes() {

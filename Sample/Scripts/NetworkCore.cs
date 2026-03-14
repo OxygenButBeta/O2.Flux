@@ -14,7 +14,11 @@ using UnityEngine;
 /// implementation of the IPlatformManager (e.g., SteamPlatform or EpicGamesPlatform).
 /// </summary>
 public class NetworkCore : MonoBehaviour {
+    // Attribute ile inject yok
+    // Scope yok
+    // Scope tanımı yok!!
     void Awake() {
-        Service<IPlatformManager>.WaitForService(pManager => pManager.Initialize());
+        GlobalService.WaitForService<IPlatformManager>(pManager => pManager.Initialize());
+        GlobalService.WaitForService<IPlatformManager>(pManager => pManager.Initialize());
     }
 }

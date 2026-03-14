@@ -8,9 +8,9 @@ public static class BindServiceEditorUtils {
         Component targetComponent = (Component)command.context;
         GameObject targetGameObject = targetComponent.gameObject;
 
-        MonoServiceBinder binder = targetGameObject.GetComponent<MonoServiceBinder>();
+        MonoGlobalServiceBinder binder = targetGameObject.GetComponent<MonoGlobalServiceBinder>();
         if (!binder) {
-            binder = targetGameObject.AddComponent<MonoServiceBinder>();
+            binder = targetGameObject.AddComponent<MonoGlobalServiceBinder>();
             Undo.RegisterCreatedObjectUndo(binder, "Create MonoServiceBinder");
         }
 

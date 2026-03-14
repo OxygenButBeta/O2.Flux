@@ -6,7 +6,7 @@ namespace O2.Flux {
     [HideMonoScript]
     [DefaultExecutionOrder(-9999)]
     [AddComponentMenu("O2.FLUX/Universal Service Binder")]
-    public partial class UniversalServiceBinder : SerializedMonoBehaviour {
+    public partial class UniversalGlobalServiceBinder : BinderBase {
         [Title("Services to Bind")]
         [ListDrawerSettings(
             ShowPaging = false,
@@ -17,11 +17,11 @@ namespace O2.Flux {
         void Awake() => BindAllServices();
 
         void BindAllServices() {
-            foreach (ServiceEntry entry in Services) entry.Bind();
+            foreach (ServiceEntry entry in Services) entry.Bind(this);
         }
 
         void OnDestroy() {
-            foreach (ServiceEntry entry in Services) entry.Unbind();
+            foreach (ServiceEntry entry in Services) entry.Unbind(this);
         }
     }
 }

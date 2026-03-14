@@ -7,7 +7,7 @@ using Sirenix.Serialization;
 using UnityEngine;
 
 namespace O2.Flux {
-    public partial class UniversalServiceBinder : SerializedMonoBehaviour {
+    public partial class UniversalGlobalServiceBinder {
         [Serializable]
         public class ServiceEntry {
             [BoxGroup("Service", ShowLabel = false)]
@@ -27,29 +27,29 @@ namespace O2.Flux {
             [ValueDropdown(nameof(GetOverrideTypes))]
             [Indent, HideLabel]
             [GUIColor(0.8f, 0.9f, 1f)]
-            [ShowInInspector] 
+            [ShowInInspector]
             public Type OverrideTypeValue {
-                get => string.IsNullOrEmpty(_overrideTypeAssemblyQualifiedName) ? null : Type.GetType(_overrideTypeAssemblyQualifiedName);
+                get => string.IsNullOrEmpty(_overrideTypeAssemblyQualifiedName)
+                    ? null
+                    : Type.GetType(_overrideTypeAssemblyQualifiedName);
                 set => _overrideTypeAssemblyQualifiedName = value?.AssemblyQualifiedName;
             }
 
             [SerializeField, HideInInspector] string _overrideTypeAssemblyQualifiedName;
 
-            internal void Bind() {
+            internal void Bind( BinderBase binder) {
                 if (Instance == null) return;
 
                 Type serviceType = GetTargetType();
-                FluxReflectionUtility.GetBindingMethod(serviceType).Invoke(null, new[] { Instance });
-                FluxUtility.HandleSpecialServiceInitialization(Instance);
+                binder.BindToContainer(serviceType, Instance);
             }
 
-            internal void Unbind() {
+            internal void Unbind( BinderBase binder) {
                 if (!UnbindOnDestroy || Instance == null)
                     return;
 
                 Type serviceType = GetTargetType();
-                FluxReflectionUtility.GetUnbindingMethod(serviceType).Invoke(null, null);
-                FluxUtility.HandleSpecialServiceDestruction(Instance);
+                binder.UnbindInstance(serviceType, Instance);
             }
 
             Type GetTargetType() {
