@@ -168,7 +168,7 @@ public class DesktopInput : IInputService, ITickable
 ## Access it anywhere
 
 ```csharp
-var movement = Service<IInputService>.Instance.GetMovement();
+var movement = Service<IInputService>.Get().GetMovement();
 ```
 
 ---
