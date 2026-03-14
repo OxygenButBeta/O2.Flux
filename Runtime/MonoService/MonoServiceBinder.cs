@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+[HideMonoScript]
 
 [DefaultExecutionOrder(-9999)]
 [AddComponentMenu("O2.FLUX/Mono Service Binder")]

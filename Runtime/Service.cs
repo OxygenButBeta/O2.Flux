@@ -1,6 +1,7 @@
 ﻿using System;
 using O2.Flux.Internal;
 using UnityEngine;
+#pragma warning disable CS0162 // Unreachable code detected
 
 namespace O2.Flux {
     public static class Service<TService> where TService : class {
@@ -28,7 +29,9 @@ namespace O2.Flux {
 #if UNITY_EDITOR
             if (LogWarning && Instance == null)
                 Debug.Log($"Trying to get null service of type {typeof(TService).Name}");
+#pragma warning disable CS0162 // Unreachable code detected
             if (LogInfo) Debug.Log($"Getting service of type {typeof(TService).Name}");
+#pragma warning restore CS0162 // Unreachable code detected
 #endif
             return Instance;
         }

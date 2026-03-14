@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace O2.Flux {
+    [HideMonoScript]
     [DefaultExecutionOrder(-9999)]
     [AddComponentMenu("O2.FLUX/Universal Service Binder")]
     public partial class UniversalServiceBinder : SerializedMonoBehaviour {
-        [HideLabel]
+        [Title("Services to Bind")]
         [ListDrawerSettings(
             ShowPaging = false,
             DraggableItems = true,
