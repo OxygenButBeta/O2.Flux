@@ -4,8 +4,13 @@
 
 Let's cut the fluff: Unity projects get messy because everything is a `MonoBehaviour` and everything depends on everything else. **O2.Flux** is a lightweight tool designed to handle your dependencies without making your life miserable.
 
-It's built for developers who want **Dependency Inversion** and a clean architecture **without the "holy grail" complexity of massive DI frameworks.**
-![O2.Flux Logo](https://raw.githubusercontent.com/OxygenButBeta/O2.Flux/main/Editor/Logo.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/OxygenButBeta/O2.Flux/main/Editor/Logo.png" width="200">
+  <br>
+  <sub>
+    Dependency Inversion and clean architecture, without the "holy grail" complexity of massive DI frameworks.
+  </sub>
+</p>
 ---
 
 # 🎨 The "Lazy Developer" Workflow
