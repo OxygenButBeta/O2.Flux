@@ -6,7 +6,7 @@ using UnityEngine;
 namespace O2.Flux {
     [DefaultExecutionOrder(-9999)]
     [AddComponentMenu("O2.FLUX/Universal Service Binder")]
-    public class UniversalServiceBinder : SerializedMonoBehaviour {
+    public partial class UniversalServiceBinder : SerializedMonoBehaviour {
         [HideLabel]
         [ListDrawerSettings(
             ShowPaging = false,

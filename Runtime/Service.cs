@@ -37,7 +37,7 @@ namespace O2.Flux {
             return new ServiceReference<TService>();
         }
 #if FLUX_UNITASK_SUPPORT
-        public static void WaitForService(System.Action<TService> onAvailable, bool notifyWhenProvided = true) {
+        public static void WaitForService(System.Action<TService> onAvailable, bool notifyWhenProvided = false) {
             if (Instance != null) {
                 ProviderListener(Instance);
                 return;
